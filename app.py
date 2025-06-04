@@ -10,30 +10,45 @@ app = Flask(__name__)
 
 def fetch_movies():
     try:
-        # 원래 사용하던 API 호스트로 복구
         conn = http.client.HTTPSConnection("imdb232.p.rapidapi.com")
 
         headers = {
             'x-rapidapi-key': os.getenv("RAPIDAPI_KEY"),
-            'x-rapidapi-host': "imdb232.p.rapidapi.com" # 호스트 복구
+            'x-rapidapi-host': "imdb232.p.rapidapi.com"
         }
 
-        # 원래 사용하던 엔드포인트 경로로 복구
         conn.request("GET", "/api/title/get-chart-rankings?rankingsChartType=TOP_250&limit=20", headers=headers)
 
         res = conn.getresponse()
         data = res.read()
 
-        print(f"🔥 API 응답 원본: {data}") # 디버깅용 로그
+        print(f"🔥 API 응답 원본: {data}")
 
         decoded = json.loads(data.decode("utf-8"))
 
-        # API 응답에서 'rankings' 리스트 추출 로직 (원래 코드)
-        rankings = decoded.get("rankings", [])
-        movies = [{"title": item.get("title", {}).get("title", "Unknown")} for item in rankings]
+        # ----------------------------------------------------
+        # **** 이 부분이 수정되었습니다! ****
+        # API 응답 구조에 맞게 'data', 'titleChartRankings', 'edges' 경로를 따라갑니다.
+        edges = decoded.get("data", {}).get("titleChartRankings", {}).get("edges", [])
+
+        movies = []
+        for edge in edges:
+            node_item = edge.get("node", {}).get("item", {})
+            title = node_item.get("titleText", {}).get("text", "Unknown Title")
+            image_url = node_item.get("primaryImage", {}).get("url", "") # 이미지 URL 추가
+            movie_id = node_item.get("id", "") # 영화 ID 추가 (나중에 상세 페이지에 유용)
+            
+            movies.append({
+                "id": movie_id,
+                "title": title,
+                "image_url": image_url # 딕셔너리에 이미지 URL 추가
+            })
+        # ----------------------------------------------------
 
         if not movies:
             print("⚠️ 경고: API 응답에서 영화 데이터를 찾을 수 없습니다. 파싱 로직 또는 API 응답을 확인하세요.")
+        else:
+            print(f"✅ 성공적으로 {len(movies)}개의 영화 데이터를 파싱했습니다.") # 성공 로그 추가
 
         return movies
 
@@ -50,8 +65,3 @@ def index():
         movies = [m for m in movies if query in m['title'].lower()]
 
     return render_template("index.html", movies=movies)
-
-# 이 부분은 Render.com 배포 시 Gunicorn이 처리하므로 일반적으로 필요 없습니다.
-# if __name__ == '__main__':
-#     port = int(os.environ.get("PORT", 5000))
-#     app.run(debug=True, host='0.0.0.0', port=port)
