@@ -16,16 +16,20 @@ def fetch_movies():
     conn.request("GET", "/top", headers=headers)
     res = conn.getresponse()
     data = res.read()
-    movies = json.loads(data.decode("utf-8"))
+    raw_movies = json.loads(data.decode("utf-8"))
 
-    # 문자열이면 딕셔너리로 변환
-    normalized = []
-    for movie in movies:
-        if isinstance(movie, dict) and "title" in movie:
-            normalized.append({"title": str(movie["title"])})
-        elif isinstance(movie, str):
-            normalized.append({"title": movie})
-    return normalized
+    # 만약 리스트 안에 문자열만 있는 경우 (title만 따로 있는 형식)
+    if all(isinstance(movie, str) for movie in raw_movies):
+        movies = [{"title": title} for title in raw_movies]
+    # 또는 dict로 되어 있지만 title 필드가 문자열이 아닌 경우를 위한 방어코드
+    elif all(isinstance(movie, dict) and "title" in movie for movie in raw_movies):
+        movies = raw_movies
+    else:
+        # 예외적인 형식이 올 경우에도 대응
+        movies = [{"title": str(movie)} for movie in raw_movies]
+
+    return movies
+
 
 
 @app.route('/')
