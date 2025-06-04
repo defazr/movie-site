@@ -16,12 +16,13 @@ def fetch_movies():
     data = res.read().decode("utf-8")
     movies = json.loads(data)
 
-    # 🎯 제목 문자열 변환 (title 메서드 적용)
-    for movie in movies:
-        if isinstance(movie.get('title'), str):
-            movie['title'] = movie['title'].title()
+    # movie가 딕셔너리인지 먼저 체크 후 title 메서드 적용
+    for i, movie in enumerate(movies):
+        if isinstance(movie, dict) and 'title' in movie and isinstance(movie['title'], str):
+            movies[i]['title'] = movie['title'].title()
 
     return movies
+
 
 @app.route('/')
 def index():
