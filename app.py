@@ -8,41 +8,27 @@ app = Flask(__name__)
 def fetch_movies():
     conn = http.client.HTTPSConnection("imdb-top-100-movies.p.rapidapi.com")
     headers = {
-        'x-rapidapi-key': os.getenv("RAPIDAPI_KEY"),
-        'x-rapidapi-host': os.getenv("RAPIDAPI_HOST")
+        "X-RapidAPI-Key": os.getenv("RAPIDAPI_KEY"),
+        "X-RapidAPI-Host": os.getenv("RAPIDAPI_HOST")
     }
+
     conn.request("GET", "/top", headers=headers)
     res = conn.getresponse()
-    data = res.read().decode("utf-8")
+    data = res.read()
     movies = json.loads(data)
-
-    # movie가 딕셔너리인지 먼저 체크 후 title 메서드 적용
-    for i, movie in enumerate(movies):
-        if isinstance(movie, dict) and 'title' in movie and isinstance(movie['title'], str):
-            movies[i]['title'] = movie['title'].title()
-
     return movies
-
 
 @app.route('/')
 def index():
-    query = request.args.get('q', '')
+    query = request.args.get('query', '')
     movies = fetch_movies()
     if query:
-        movies = [m for m in movies if query.lower() in m['title'].lower()]
-    return render_template('index.html', movies=movies, query=query)
+        movies = [movie for movie in movies if query.lower() in movie['title'].lower()]
+    return render_template('index.html', movies=movies)
 
 @app.route('/privacy-policy')
 def privacy():
-    return render_template('privacy.html')
-
-@app.route('/terms')
-def terms():
-    return render_template('terms.html')
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
+    return "<h1>Privacy Policy</h1><p>This is a sample privacy policy page.</p>"
 
 if __name__ == '__main__':
     app.run(debug=True)
