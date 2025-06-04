@@ -7,7 +7,6 @@ app = Flask(__name__)
 
 def fetch_movies():
     conn = http.client.HTTPSConnection("imdb-top-100-movies.p.rapidapi.com")
-
     headers = {
         "X-RapidAPI-Key": os.getenv("RAPIDAPI_KEY"),
         "X-RapidAPI-Host": os.getenv("RAPIDAPI_HOST")
@@ -16,19 +15,23 @@ def fetch_movies():
     conn.request("GET", "/top", headers=headers)
     res = conn.getresponse()
     data = res.read()
-    raw_movies = json.loads(data.decode("utf-8"))
 
-    # 만약 리스트 안에 문자열만 있는 경우 (title만 따로 있는 형식)
-    if all(isinstance(movie, str) for movie in raw_movies):
-        movies = [{"title": title} for title in raw_movies]
-    # 또는 dict로 되어 있지만 title 필드가 문자열이 아닌 경우를 위한 방어코드
-    elif all(isinstance(movie, dict) and "title" in movie for movie in raw_movies):
-        movies = raw_movies
-    else:
-        # 예외적인 형식이 올 경우에도 대응
-        movies = [{"title": str(movie)} for movie in raw_movies]
+    # 📌 이 줄을 추가해서 받은 데이터를 확인해보세요
+    print("🔥 API 응답 원본:", data)
+
+    try:
+        movies = json.loads(data.decode("utf-8"))
+    except Exception as e:
+        print("❌ JSON 디코딩 에러:", e)
+        return [{"title": "Failed to load movies"}]
+
+    # 혹시 에러 메시지일 경우 대비
+    if isinstance(movies, dict) and 'message' in movies:
+        print("❗에러 메시지:", movies['message'])
+        return [{"title": movies['message']}]
 
     return movies
+
 
 
 
