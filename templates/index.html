@@ -40,7 +40,7 @@
   </form>
   <ul>
     {% for movie in movies %}
-      <li>{{ movie['title'] }} ⭐</li>
+      <li>{{ movie['title'].title() }} ⭐</li>
     {% endfor %}
   </ul>
   <footer>
