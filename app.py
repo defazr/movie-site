@@ -1,19 +1,16 @@
-
 from flask import Flask, render_template, request
 import http.client
 import json
+import os
 
 app = Flask(__name__)
 
 def fetch_movies():
     conn = http.client.HTTPSConnection("imdb-top-100-movies.p.rapidapi.com")
-    import os
-
-headers = {
-    'x-rapidapi-key': os.getenv("RAPIDAPI_KEY"),
-    'x-rapidapi-host': os.getenv("RAPIDAPI_HOST")
-}
-
+    headers = {
+        'x-rapidapi-key': os.getenv("RAPIDAPI_KEY"),
+        'x-rapidapi-host': os.getenv("RAPIDAPI_HOST")
+    }
     conn.request("GET", "/top", headers=headers)
     res = conn.getresponse()
     data = res.read().decode("utf-8")
