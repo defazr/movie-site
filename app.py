@@ -34,6 +34,6 @@ def index():
     movies = fetch_movies()
 
     if query:
-        movies = [movie for movie in movies if query in movie.get('title', '').lower()]
+        movies = [movie for movie in movies if query in movie['title'].lower()]
 
     return render_template("index.html", movies=movies)
