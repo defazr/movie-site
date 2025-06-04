@@ -1,52 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>🎬 IMDb Top Movies</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f9f9f9;
-      color: #333;
-    }
-    h1 {
-      color: #222;
-    }
-    input[type="text"] {
-      padding: 8px;
-      width: 300px;
-      margin-bottom: 20px;
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    li {
-      padding: 5px 0;
-    }
-    footer {
-      margin-top: 40px;
-      font-size: 0.9em;
-      color: #777;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>🎬 IMDb Top Movies</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #eee;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #ff6b00;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background-color: #222;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-  <h1>🎬 IMDb Top Movies</h1>
-  <form method="GET" action="/">
-    <input type="text" name="q" placeholder="Search movie title..." value="{{ query }}">
-    <button type="submit">🔍 Search</button>
-  </form>
-  <ul>
-    {% for movie in movies %}
-      <li>{{ movie['title'].title() }} ⭐</li>
-    {% endfor %}
-  </ul>
-  <footer>
-    <a href="/privacy-policy">Privacy Policy</a> |
-    <a href="/terms">Terms</a> |
-    <a href="/about">About</a>
-  </footer>
+    <h1>🎬 IMDb Top Movies</h1>
+
+    <form method="get" action="/">
+        <input type="text" name="query" placeholder="Search movie title..." value="{{ request.args.get('query', '') }}">
+        <button type="submit">🔍 Search</button>
+    </form>
+
+    <ul>
+        {% for movie in movies %}
+            <li>{{ movie['title'] }} ⭐</li>
+        {% endfor %}
+    </ul>
+
+    <footer>
+        Privacy Policy | Terms | About
+    </footer>
 </body>
 </html>
