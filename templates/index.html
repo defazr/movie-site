@@ -1,79 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>🎬 IMDb Top Movies</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        input[type="text"] {
-            padding: 8px;
-            width: 250px;
-            font-size: 14px;
-        }
-        button {
-            padding: 8px 12px;
-            font-size: 14px;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            background: white;
-            margin-bottom: 10px;
-            padding: 12px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 14px;
-            color: #888;
-        }
-        a {
-            color: #007BFF;
-            text-decoration: none;
-            margin: 0 8px;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>🎬 IMDb Top Movies</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      color: #222;
+    }
+    input[type="text"] {
+      padding: 8px;
+      width: 300px;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      padding: 5px 0;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
 </head>
 <body>
-    <h1>🎬 IMDb Top Movies</h1>
-    <form method="get" action="/">
-        <input type="text" name="q" value="{{ query }}" placeholder="Search for a movie...">
-        <button type="submit">Search</button>
-    </form>
-    <ul>
-        {% for movie in movies %}
-            <li>{{ movie['title'].title() }} ⭐</li>
-        {% endfor %}
-    </ul>
-    <footer>
-        <a href="/privacy-policy">Privacy Policy</a> |
-        <a href="/terms">Terms</a> |
-        <a href="/about">About</a>
-    </footer>
+  <h1>🎬 IMDb Top Movies</h1>
+  <form method="GET" action="/">
+    <input type="text" name="q" placeholder="Search movie title..." value="{{ query }}">
+    <button type="submit">🔍 Search</button>
+  </form>
+  <ul>
+    {% for movie in movies %}
+      <li>{{ movie['title'] | title }} ⭐</li>
+    {% endfor %}
+  </ul>
+  <footer>
+    <a href="/privacy-policy">Privacy Policy</a> |
+    <a href="/terms">Terms</a> |
+    <a href="/about">About</a>
+  </footer>
 </body>
 </html>
