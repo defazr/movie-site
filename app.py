@@ -16,11 +16,14 @@ def fetch_movies():
     conn.request("GET", "/top", headers=headers)
     res = conn.getresponse()
     data = res.read()
-    movies = json.loads(data.decode("utf-8"))
+    movies_raw = json.loads(data.decode("utf-8"))
 
-    # 문자열 리스트일 경우 title이 포함된 딕셔너리로 정리
-    if isinstance(movies, list) and isinstance(movies[0], str):
-        movies = [{"title": title} for title in movies]
+    # title 필드가 문자열인 것만 추림
+    movies = []
+    for movie in movies_raw:
+        title = movie.get("title")
+        if isinstance(title, str):
+            movies.append({"title": title})
 
     return movies
 
