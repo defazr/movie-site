@@ -1,20 +1,27 @@
-import os
 from flask import Flask, render_template, request
 import http.client
 import json
+import os
 
 app = Flask(__name__)
 
 def fetch_movies():
     conn = http.client.HTTPSConnection("imdb-top-100-movies.p.rapidapi.com")
     headers = {
-    'x-rapidapi-key': os.getenv("RAPIDAPI_KEY"),
-    'x-rapidapi-host': os.getenv("RAPIDAPI_HOST")
-}
+        'x-rapidapi-key': os.getenv("RAPIDAPI_KEY"),
+        'x-rapidapi-host': os.getenv("RAPIDAPI_HOST")
+    }
     conn.request("GET", "/top", headers=headers)
     res = conn.getresponse()
     data = res.read().decode("utf-8")
-    return json.loads(data)
+    movies = json.loads(data)
+
+    # 🎯 제목 문자열 변환 (title 메서드 적용)
+    for movie in movies:
+        if isinstance(movie.get('title'), str):
+            movie['title'] = movie['title'].title()
+
+    return movies
 
 @app.route('/')
 def index():
