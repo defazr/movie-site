@@ -16,16 +16,17 @@ def fetch_movies():
     conn.request("GET", "/top", headers=headers)
     res = conn.getresponse()
     data = res.read()
-    movies_raw = json.loads(data.decode("utf-8"))
+    movies = json.loads(data.decode("utf-8"))
 
-    # title 필드가 문자열인 것만 추림
-    movies = []
-    for movie in movies_raw:
-        title = movie.get("title")
-        if isinstance(title, str):
-            movies.append({"title": title})
+    # 문자열이면 딕셔너리로 변환
+    normalized = []
+    for movie in movies:
+        if isinstance(movie, dict) and "title" in movie:
+            normalized.append({"title": str(movie["title"])})
+        elif isinstance(movie, str):
+            normalized.append({"title": movie})
+    return normalized
 
-    return movies
 
 @app.route('/')
 def index():
