@@ -1,7 +1,7 @@
+import os
 from flask import Flask, render_template, request
 import http.client
 import json
-import os
 
 app = Flask(__name__)
 
