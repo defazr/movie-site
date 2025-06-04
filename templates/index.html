@@ -1,0 +1,19 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>IMDb Top Movies</title></head>
+<body>
+<h1>🎬 IMDb Top Movies</h1>
+<form method="get">
+<input type="text" name="q" placeholder="Search movies..." value="{{ query }}">
+<button type="submit">Search</button>
+</form>
+<ul>
+{% for movie in movies %}
+<li>{{ movie.title }} ({{ movie.year }}) ⭐ {{ movie.rating }}</li>
+{% endfor %}
+</ul>
+<hr>
+<a href="/privacy-policy">Privacy Policy</a> | <a href="/terms">Terms</a> | <a href="/about">About</a>
+</body>
+</html>
