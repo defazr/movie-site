@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>🎬 IMDb Top Movies</title>
+    <title>🎬 IMDb Top 20</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         body {
@@ -51,21 +51,18 @@
     </style>
 </head>
 <body>
-    <h1>🎬 IMDb Top Movies</h1>
-
+    <h1>🎬 IMDb Top 20 Movies</h1>
     <form method="get" action="/">
         <input type="text" name="query" placeholder="Search movie title..." value="{{ request.args.get('query', '') }}">
         <button type="submit">🔍 Search</button>
     </form>
-
     <ul>
         {% for movie in movies %}
-            <li>{{ movie['title'] | title }} ⭐</li>
+            <li>{{ movie.title }} ⭐</li>
         {% endfor %}
     </ul>
-
     <footer>
-        Privacy Policy | Terms | About
+        IMDb API 기반 영화 순위 차트
     </footer>
 </body>
 </html>
