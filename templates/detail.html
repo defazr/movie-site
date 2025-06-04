@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 {{ movie.title }} 상세 정보</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #eee;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #222;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #ff6b00;
+            margin-bottom: 10px;
+        }
+        .movie-details {
+            display: flex;
+            flex-wrap: wrap; /* 작은 화면에서 줄바꿈 */
+            gap: 30px; /* 간격 */
+            align-items: flex-start; /* 상단 정렬 */
+        }
+        .movie-poster {
+            flex: 0 0 250px; /* 고정 너비 */
+            max-width: 100%;
+            text-align: center;
+        }
+        .movie-poster img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+        .movie-info {
+            flex: 1; /* 남은 공간 모두 사용 */
+            min-width: 300px; /* 최소 너비 */
+        }
+        .movie-info p {
+            margin-bottom: 10px;
+        }
+        .movie-info strong {
+            color: #ddd;
+        }
+        .genre-tag {
+            display: inline-block;
+            background-color: #444;
+            color: #eee;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        .back-button {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 0;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ movie.title }}</h1>
+            <p><strong>개봉 연도:</strong> {{ movie.release_year }}</p>
+        </div>
+        
+        <div class="movie-details">
+            <div class="movie-poster">
+                {% if movie.image_url %}
+                    <img src="{{ movie.image_url }}" alt="{{ movie.title }} Poster">
+                {% else %}
+                    <img src="{{ url_for('static', filename='no_image.png') }}" alt="No Image Available">
+                {% endif %}
+            </div>
+            <div class="movie-info">
+                <p><strong>줄거리:</strong> {{ movie.plot }}</p>
+                <p><strong>장르:</strong> 
+                    {% if movie.genres %}
+                        {% for genre in movie.genres %}
+                            <span class="genre-tag">{{ genre }}</span>
+                        {% endfor %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+                <p><strong>감독:</strong> 
+                    {% if movie.directors %}
+                        {{ movie.directors | join(', ') }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+                <p><strong>출연진:</strong> 
+                    {% if movie.cast %}
+                        {{ movie.cast[:5] | join(', ') }} {% if movie.cast|length > 5 %}. . .{% endif %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+                <p><strong>IMDb 평점:</strong> {{ movie.rating }} / 10 ({{ '{:,.0f}'.format(movie.vote_count | int) }}표)</p>
+            </div>
+        </div>
+        
+        <a href="/" class="back-button">← 목록으로 돌아가기</a>
+    </div>
+    <footer>
+        IMDb API 기반 영화 순위 차트
+    </footer>
+</body>
+</html>

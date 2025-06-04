@@ -32,16 +32,46 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        ul {
+        /* --- 여기부터 새로운 CSS 추가/수정 --- */
+        .movies-grid { /* ul 대신 새로운 클래스 */
+            display: grid; /* 그리드 레이아웃 사용 */
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 반응형 그리드 */
+            gap: 20px; /* 항목 간 간격 */
             list-style: none;
             padding: 0;
+            max-width: 1200px; /* 최대 너비 */
+            margin: 0 auto; /* 가운데 정렬 */
+            justify-content: center; /* 그리드 중앙 정렬 */
         }
-        li {
+        .movie-item { /* li 대신 새로운 클래스 */
             background-color: #222;
             padding: 10px;
-            margin-bottom: 5px;
-            border-radius: 5px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s; /* 호버 효과 */
         }
+        .movie-item:hover {
+            transform: translateY(-5px); /* 호버 시 약간 위로 */
+        }
+        .movie-item a { /* 링크 스타일 */
+            text-decoration: none;
+            color: inherit; /* 부모 요소의 글자색 상속 */
+            display: block; /* 블록 요소로 만들어 전체를 클릭 가능하게 */
+        }
+        .movie-item img { /* 이미지 스타일 */
+            max-width: 100%; /* 부모 요소 너비에 맞춤 */
+            height: auto; /* 비율 유지 */
+            border-radius: 4px; /* 이미지 모서리 둥글게 */
+            margin-bottom: 10px; /* 이미지와 텍스트 간격 */
+        }
+        .movie-item h3 { /* 제목 스타일 */
+            font-size: 1em;
+            margin: 0;
+            padding: 0;
+            word-wrap: break-word; /* 긴 제목 줄바꿈 */
+        }
+        /* --- 여기까지 새로운 CSS 추가/수정 --- */
         footer {
             text-align: center;
             margin-top: 40px;
@@ -56,11 +86,20 @@
         <input type="text" name="query" placeholder="Search movie title..." value="{{ request.args.get('query', '') }}">
         <button type="submit">🔍 Search</button>
     </form>
-    <ul>
+    <div class="movies-grid">
         {% for movie in movies %}
-            <li>{{ movie.title }} ⭐</li>
+            <div class="movie-item">
+                <a href="/movie/{{ movie.id }}">
+                    {% if movie.image_url %}
+                        <img src="{{ movie.image_url }}" alt="{{ movie.title }} Poster">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='no_image.png') }}" alt="No Image Available">
+                    {% endif %}
+                    <h3>{{ movie.title }}</h3>
+                </a>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
     <footer>
         IMDb API 기반 영화 순위 차트
     </footer>
